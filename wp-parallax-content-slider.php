@@ -5,14 +5,10 @@
  * Description: A customizable JQuery content slider with CSS3 animations and parallax effects
  * Author URI: http://jltweb.info/
  * Author: Julien Le Thuaut (MBA Multimedia)
- * Version: 1.0-dev
+ * Version: 0.9.6
  * Licence: GPLv2
  *
- * Contributor: Chun Law
- * Contribution: 	Use first image in content if there is no thumbnail image.
- *					If no image in content, use default image
- *
-*/
+ */
 
 include_once plugin_dir_path( __FILE__ ) .'includes/content_functions.php';
 
@@ -97,7 +93,7 @@ class WpParallaxContentSlider
 		 */
 		$prlx_slider_settings = array(
 				'mode'            => 'static',		// Slider display mode (static / dynamic)
-				'theme'           => 'silver',		// default / silver / retro / dark
+				'theme'           => 'silver',		// default / silver / retro / dark / from theme
 				'bgincrement'     => 50,			// increment the background position (i.e. parallax effect) when sliding (in px)
 				'autoplay'        => 0,				// slideshow auto switch ON (1) / OFF (0)
 				'interval'        => 4000,			// Time between transitions (ms)
@@ -171,7 +167,7 @@ class WpParallaxContentSlider
 	} // end uninstall
 
 	/**
-	 * Enable shortcodes : 
+	 * Enable shortcodes :
 	 * [parallaxcontentslider]
 	 * [parallaxcontentslider cat="2"]
 	 * [parallaxcontentslider cat="2,5"]
@@ -181,7 +177,7 @@ class WpParallaxContentSlider
 		extract( shortcode_atts( array (
 										'categ' => '',
 									   ), $atts ) );
-		
+
 		get_wp_parallax_content_slider( $categ );
 	}
 
@@ -237,6 +233,8 @@ class WpParallaxContentSlider
 				wp_enqueue_style( 'wp-parallax-content-slider-css-theme', plugins_url( 'css/theme-retro.css', __FILE__ ) );
 			case 'silver' :
 				wp_enqueue_style( 'wp-parallax-content-slider-css-theme', plugins_url( 'css/theme-silver.css', __FILE__ ) );
+			case 'theme' :
+				wp_enqueue_style( 'wp-parallax-content-slider-css-theme', get_stylesheet_directory_uri().'/wp-parallax-content-slider.css' );
 		}
 
 		// --------------------------------------------------------
@@ -256,7 +254,7 @@ class WpParallaxContentSlider
 		}
 
 		$cat = '';
-		if ( ! empty( $category ) ) 
+		if ( ! empty( $category ) )
 		{
 			// Mode is forced to 'dynamic'
 			$prlx_slider_mode = 'dynamic';
@@ -292,7 +290,7 @@ class WpParallaxContentSlider
 		while ( $myposts->have_posts() ) : $myposts->the_post();
 
 			// $custom = get_post_custom($post->ID);
-						
+
 			// Display the post thumbnail if there is one (Thank you John)
 			if ( has_post_thumbnail() ) {
 				$thumb = wp_get_attachment_image_src( get_post_thumbnail_id( $post->ID ), 'medium' );
@@ -340,7 +338,12 @@ DYNAMICOUTPUT;
 		else
 		{
 			$outputStatic = '';
-			include( 'static-slides-sample.php' );
+			if (file_exists(get_stylesheet_directory().'/static-slides.php')) {
+				include( get_stylesheet_directory().'/static-slides.php' );
+			}
+			else {
+				include( 'static-slides-sample.php' );
+			}
 			echo $outputStatic;
 		}
 
@@ -602,6 +605,7 @@ DYNAMICOUTPUT;
 								<option value="dark" <?php if ( $prlx_slider_settings['theme'] === "dark") echo 'selected="selected"'; ?>><?php _e( 'Dark', 'wp-parallax-content-slider' ); ?></option>
 								<option value="retro" <?php if ( $prlx_slider_settings['theme'] === "retro") echo 'selected="selected"'; ?>><?php _e( 'Retro Red', 'wp-parallax-content-slider' ); ?></option>
 								<option value="silver" <?php if ( $prlx_slider_settings['theme'] === "silver") echo 'selected="selected"'; ?>><?php _e( 'Silver', 'wp-parallax-content-slider' ); ?></option>
+								<option value="theme" <?php if ( $prlx_slider_settings['theme'] === "theme") echo 'selected="selected"'; ?>><?php _e( 'From Current Theme', 'wp-parallax-content-slider' ); ?></option>
 							</select>
 						</td>
 					</tr>
@@ -644,7 +648,7 @@ DYNAMICOUTPUT;
 					<tr>
 						<th scope="row"><?php _e( 'Number of articles to display', 'wp-parallax-content-slider' ); ?>:</th>
 						<td>
-							<input type="text" name="prlx_slider_nb_articles" id="prlx_slider_nb_articles" value="<?php echo $prlx_slider_settings['nb_articles']; ?>" maxlength="2" size="2" />
+							<input type="text" name="prlx_slider_nb_articles" id="prlx_slider_nb_articles" value="<?php echo $prlx_slider_settings['nb_articles']; ?>" maxlength="1" size="1" />
 							<label for="prlx_slider_nb_articles"><?php _e( 'Maximum number of articles to display in the dynamic slider', 'wp-parallax-content-slider' ); ?></label><br />
 						</td>
 					</tr>
