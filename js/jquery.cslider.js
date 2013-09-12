@@ -15,7 +15,7 @@
 		current		: 0, 	// index of current slide
 		bgincrement	: 50,	// increment the bg position (parallax effect) when sliding
 		autoplay	: false,// slideshow on / off
-		interval	: 4000  // time between transitions
+		interval	: 1000  // time between transitions
     };
 	
 	$.Slider.prototype 	= {
@@ -141,7 +141,8 @@
 				
 				$next.css( 'left', ( d === 'next' ) ? '100%' : '-100%' ).stop().animate( {
 					left : '0%'
-				}, 1000, function() { 
+				}, 1000, function() {
+					$next.addClass( 'da-slide-current' ); 
 					_self.isAnimating = false; 
 				});
 				
@@ -169,7 +170,7 @@
 			this.slideshow	= setTimeout( function() {
 				
 				var page = ( _self.current < _self.slidesCount - 1 ) ? page = _self.current + 1 : page = 0;
-				_self._navigate( page, 'next' );
+				_self._navigate( page, 'next' );				alert('slideshow go!');
 				
 				if( _self.options.autoplay ) {
 				
