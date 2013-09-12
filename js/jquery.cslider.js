@@ -170,7 +170,7 @@
 			this.slideshow	= setTimeout( function() {
 				
 				var page = ( _self.current < _self.slidesCount - 1 ) ? page = _self.current + 1 : page = 0;
-				_self._navigate( page, 'next' );				alert('slideshow go!');
+				_self._navigate( page, 'next' );
 				
 				if( _self.options.autoplay ) {
 				
